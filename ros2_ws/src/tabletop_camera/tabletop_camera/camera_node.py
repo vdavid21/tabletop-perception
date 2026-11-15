@@ -4,6 +4,7 @@ from cv_bridge import CvBridge
 from rclpy.node import Node
 from rclpy.qos import qos_profile_sensor_data
 from sensor_msgs.msg import Image
+import time
 
 
 class CameraNode(Node):
@@ -31,6 +32,9 @@ class CameraNode(Node):
             raise RuntimeError('Could not open camera pipeline')
 
         self.timer = self.create_timer(1.0 / self.fps, self.publish_frame)
+        self.count = 0
+        self.max_proc = 0.0
+        self.last_report = self.get_clock().now()
 
     def build_pipeline(self) -> str:
         def p(name):
@@ -48,6 +52,7 @@ class CameraNode(Node):
     def publish_frame(self):
         ok, frame = self.cap.read()
         stamp = self.get_clock().now().to_msg()
+        t0 = time.perf_counter()
         if not ok:
             self.get_logger().warn(
                 'Frame read failed', throttle_duration_sec=5.0)
@@ -56,6 +61,17 @@ class CameraNode(Node):
         msg.header.stamp = stamp
         msg.header.frame_id = self.frame_id
         self.publisher.publish(msg)
+        self.max_proc = max(self.max_proc, time.perf_counter() - t0)
+        self.count += 1
+        now = self.get_clock().now()
+        elapsed = (now - self.last_report).nanoseconds / 1e9
+        if elapsed >= 5.0:
+            self.get_logger().info(
+                f'published {self.count / elapsed:.2f} Hz, '
+                f'max processing {self.max_proc * 1e3:.1f} ms')
+            self.count = 0
+            self.max_proc = 0.0
+            self.last_report = now
 
     def destroy_node(self):
         self.cap.release()
