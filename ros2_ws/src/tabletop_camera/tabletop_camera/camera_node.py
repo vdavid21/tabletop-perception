@@ -19,6 +19,7 @@ class CameraNode(Node):
         self.declare_parameter('output_height', 616)
         self.declare_parameter('fps', 30)
         self.declare_parameter('frame_id', 'camera_optical_frame')
+        self.declare_parameter('flip_method', 0)
 
         self.frame_id = self.get_parameter('frame_id').value
         self.fps = self.get_parameter('fps').value
@@ -43,7 +44,7 @@ class CameraNode(Node):
             f"nvarguscamerasrc sensor-id={p('sensor_id')} sensor-mode={p('sensor_mode')} ! "
             f"video/x-raw(memory:NVMM),width={p('capture_width')},height={p('capture_height')},"
             f"format=NV12,framerate={p('fps')}/1 ! "
-            "nvvidconv ! "
+            f"nvvidconv flip-method={p('flip_method')} ! "
             f"video/x-raw,width={p('output_width')},height={p('output_height')},format=BGRx ! "
             "videoconvert ! video/x-raw,format=BGR ! "
             "appsink drop=true max-buffers=1"
