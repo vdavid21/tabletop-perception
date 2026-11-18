@@ -4,6 +4,7 @@ ros2_ws/log/
 training/data/
 training/checkpoints/
 training/exports/
+docs/notes
 
 # Python
 __pycache__/
