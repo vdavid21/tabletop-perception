@@ -5,6 +5,7 @@ training/data/
 training/checkpoints/
 training/exports/
 docs/notes
+models/
 
 # Python
 __pycache__/
