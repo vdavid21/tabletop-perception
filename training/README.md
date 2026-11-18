@@ -22,7 +22,7 @@ Run from this folder with `uv run python scripts/<name>.py`.
 | `train`        | Train for 15 epochs; saves the best model to `checkpoints/best.pt` |
 | `visualize`    | Save image / true mask / prediction for 6 validation images to `data/predictions.png` |
 | `test`         | Report per-class IoU and Dice on the test set |
-| `export_onnx`  | Export `checkpoints/best.pt` to `exports/pet_lraspp_256.onnx` (plus its `.onnx.data` weights file; keep both together) |
+| `export_onnx`  | Export `checkpoints/best.pt` to `exports/pet_lraspp_256.onnx`.  |
 | `check_onnx`   | Compare PyTorch and ONNX Runtime on 20 validation images: largest logit difference and share of matching pixels |
 
 ## Results

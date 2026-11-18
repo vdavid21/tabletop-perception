@@ -20,7 +20,7 @@ def main():
     torch.onnx.export(
         model, (example,), EXPORT_DIR / "pet_lraspp_256.onnx",
         input_names=["image"], output_names=["logits"],
-        dynamo=True,
+        dynamo=True, external_data=False,
     )
 
 
